@@ -1,13 +1,11 @@
 class GameBoard {
     constructor() {
         this.board = new Array();
-        console.log("test")
         this.currentPlayer = X_PLAYER;
         this.init();
     }
 
     setTile = function(tileIndex) {
-        console.log(tileIndex);
         this.board[tileIndex].setTilePlayer(this.currentPlayer);
     }
 
@@ -15,7 +13,6 @@ class GameBoard {
         for (var index = 0; index < NUMBER_OF_TILES; ++index) {
             this.board[index] = new Tile();
             this.board[index].setTilePlayer("A" + index);
-            console.log(this.board[index].playerCode);
         }
     }
 
@@ -30,37 +27,53 @@ class GameBoard {
 
     AITurn = function() {
         var tileIndex = Math.floor(Math.random() * NUMBER_OF_TILES);
-
-        console.log("tileIndex: " + tileIndex)
         if (this.checkIfTileIsFree(tileIndex)) {
-            gameBoard.setTile(tileIndex);
+            this.setTile(tileIndex);
 
             var currentButton = tileButtons[tileIndex];
-            currentButton.innerHTML = "<b>" + gameBoard.currentPlayer + "</b>";
+            currentButton.innerHTML = "<b>" + this.currentPlayer + "</b>";
             currentButton.style.backgroundColor = "ORANGERED";
 
-            gameBoard.checkIfWin(tileIndex);
-            gameBoard.switchPlayer();
+            if (this.checkIfDraw()) {
+                this.declareWinner();
+            }
+
+            if (this.checkIfWin(tileIndex)) {
+                this.declareWinner(O_PLAYER);
+            } else {
+                gameBoard.switchPlayer();
+            }
         } else {
             this.AITurn()
         }
     }
 
     checkIfTileIsFree = function(tileIndex) {
-        console.table(this.board);
         var tilePlayer = this.board[tileIndex].playerCode;
         return (tilePlayer != X_PLAYER && tilePlayer != O_PLAYER)
     }
     checkIfWin = function(tileIndex) {
         if (this.checkWinConditions()) {
             alert(this.currentPlayer + " has won the game!");
+            return true;
         }
+        return false;
+    }
+
+    checkIfDraw = function() {
+        var numberOfFilledTiles = 0;
+        for (var i = 0; i < NUMBER_OF_TILES; ++i) {
+            var currentTileCode = this.board[i].playerCode;
+            if (currentTileCode == X_PLAYER || currentTileCode == O_PLAYER) {
+                ++numberOfFilledTiles;
+            }
+        }
+        return (numberOfFilledTiles == NUMBER_OF_TILES);
     }
 
     checkWinConditions = function() {
         var board = this.board;
         var currentPlayer = this.currentPlayer;
-        console.table(board)
 
         var playerHasWon = false;
         if (board[0].playerCode == board[1].playerCode && board[0].playerCode == board[2].playerCode) {
@@ -82,5 +95,18 @@ class GameBoard {
         }
 
         return playerHasWon;
+    }
+
+    declareWinner = function(winningPlayer) {
+        switch (winningPlayer) {
+            case X_PLAYER:
+                document.body.innerHTML = "<div><h1>You win!</h1></div>";
+                break;
+            case O_PLAYER:
+                document.body.innerHTML = "<div><h1>You lose!</h1></div>";
+                break;
+            default:
+                document.body.innerHTML = "<div><h1>Draw!</h1></div>"
+        }
     }
 }

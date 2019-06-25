@@ -12,18 +12,11 @@ for (var i = 0; i < NUMBER_OF_TILES / 3; ++i) {
     document.writeln("</p>");
 }
 
-console.log(tileButtons)
-
 for (var i = 0; i < NUMBER_OF_TILES; ++i) {
     tileButtons[i].addEventListener('click', function() {
-        console.log(event);
         var currentButton = event.srcElement;
-
         var tileIndex = currentButton.id - 1;
-
         var tilePlayer = gameBoard.board[tileIndex].playerCode;
-
-        console.log(tilePlayer);
 
         if (tilePlayer != X_PLAYER && tilePlayer != O_PLAYER) {
             gameBoard.setTile(tileIndex);
@@ -31,8 +24,16 @@ for (var i = 0; i < NUMBER_OF_TILES; ++i) {
 
             currentButton.style.backgroundColor = "RED";
 
-            gameBoard.checkIfWin(tileIndex);
-            gameBoard.switchPlayer();
+            if (gameBoard.checkIfDraw()) {
+                gameBoard.declareWinner();
+            }
+
+            if (gameBoard.checkIfWin(tileIndex)) {
+                gameBoard.declareWinner(X_PLAYER);
+            } else {
+                gameBoard.switchPlayer();
+            }
+
         } else {
             alert("This Tile already has a player!")
         }
