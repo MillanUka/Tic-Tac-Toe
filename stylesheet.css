@@ -1,0 +1,16 @@
+canvas {
+    background-color: aqua;
+}
+
+button {
+    background-color: #fff;
+    width: 150px;
+    background-color: green;
+    height: 150px;
+}
+
+div {
+    margin: auto;
+    width: 40%;
+    padding: 10px;
+}
