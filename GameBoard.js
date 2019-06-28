@@ -32,10 +32,15 @@ class GameBoard {
 
     //This method simulates the AI turn
     AITurn = function() {
-        var index = this.checkPossiblePlayerTurns();
+        //This index is the index for the AI to win it will be -1 if they cannot win in that turn
+        var winIndex = this.checkPossiblePlayerTurns(O_PLAYER);
+        //This index is the index for the player to win it will be -1 if they cannot win in that turn
+        var loseIndex = this.checkPossiblePlayerTurns(X_PLAYER);
         //checking whether the index that may cause the player is valid
-        if (index != -1) {
-            this.setAITile(index);
+        if (winIndex != -1) {
+            this.setAITile(winIndex);
+        } else if (loseIndex != -1) {
+            this.setAITile(loseIndex);
         } else {
             //If the AI can't find a move that will cause the player to win just do a random move
             this.AIRandomMove();
@@ -54,7 +59,7 @@ class GameBoard {
 
 
     //This method check the possible moves that the player could do in there next turn
-    checkPossiblePlayerTurns = function() {
+    checkPossiblePlayerTurns = function(playerCode) {
         var board = this.board;
         //Mkaing a temporary gameboard to simulate the player next move
         var tempBoard = new GameBoard();
@@ -69,7 +74,7 @@ class GameBoard {
 
         for (i = 0; i < NUMBER_OF_TILES; ++i) {
             if (this.checkIfTileIsVacant(i)) {
-                tempBoard.board[i].playerCode = X_PLAYER;
+                tempBoard.board[i].playerCode = playerCode;
 
                 if (tempBoard.checkIfWin()) {
                     tempIndex = i;
